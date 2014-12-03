@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moriyama.Cloud", "Moriyama.Cloud\Moriyama.Cloud.csproj", "{3519B2B4-05C4-400E-B99C-FA99CB6F491D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moriyama.Cloud.Tests", "Moriyama.Cloud.Tests\Moriyama.Cloud.Tests.csproj", "{EFF9AEF8-F587-4497-866C-DF48F1AC185C}"
+EndProject
+Project("{E09DD79A-4488-4AB9-8D3F-A7EEE78BF432}") = "Moriyama.Cloud.NuGet", "Moriyama.Cloud.NuGet\Moriyama.Cloud.NuGet.nuproj", "{70AF88B3-F20B-46F2-8159-A9F7EB9C2165}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +23,10 @@ Global
 		{EFF9AEF8-F587-4497-866C-DF48F1AC185C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFF9AEF8-F587-4497-866C-DF48F1AC185C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFF9AEF8-F587-4497-866C-DF48F1AC185C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70AF88B3-F20B-46F2-8159-A9F7EB9C2165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70AF88B3-F20B-46F2-8159-A9F7EB9C2165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70AF88B3-F20B-46F2-8159-A9F7EB9C2165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70AF88B3-F20B-46F2-8159-A9F7EB9C2165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
