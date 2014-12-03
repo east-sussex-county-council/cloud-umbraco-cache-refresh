@@ -8,6 +8,9 @@ using Moriyama.Cloud.Umbraco.Interfaces.Application;
 using umbraco.BusinessLogic;
 using Umbraco.Core.Logging;
 using UmbracoCms = Umbraco;
+using Umbraco.Core.Models;
+using Umbraco.Core.Services;
+using umbraco;
 
 namespace Moriyama.Cloud.Umbraco.Application
 {
@@ -124,8 +127,8 @@ namespace Moriyama.Cloud.Umbraco.Application
         private void DeleteHosts(SqlConnection connection)
         {
             // TODO: extract this out to configuration somewhere
-            // Ten Minutes
-            var expired = DateTime.Now.Subtract(TimeSpan.FromSeconds(600));
+            // 4 days, to cover a weekend
+            var expired = DateTime.Now.Subtract(TimeSpan.FromDays(4));
 
             // This will delete hosts that haven't been active for a while.
             var deleteHostSql = TextResourceReader.Instance.ReadResourceFile("Moriyama.Cloud.Umbraco.Sql.DeleteHost.sql");
