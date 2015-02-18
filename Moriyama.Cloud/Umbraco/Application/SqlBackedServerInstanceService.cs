@@ -98,14 +98,20 @@ namespace Moriyama.Cloud.Umbraco.Application
             }
             publishes.Close();
 
-            if (processedPublishses.Count > 0)
+            const int batchSize = 10;
+            var taken = processedPublishses.Take(batchSize).ToArray();
+            while (taken.Length > 0) 
             {
+                processedPublishses.RemoveRange(0, taken.Length);
+
                 var deleteSql =
                     TextResourceReader.Instance.ReadResourceFile("Moriyama.Cloud.Umbraco.Sql.DeletePublishes.sql");
 
                 command = new SqlCommand(deleteSql, connection);
-                command.Parameters.AddWithValue("@Publishes", string.Join(",", processedPublishses.ToArray()));
+                command.Parameters.AddWithValue("@Publishes", string.Join(",", taken));
                 command.ExecuteNonQuery();
+
+                taken = processedPublishses.Take(batchSize).ToArray();
             }
 
             KeepAlive(connection, hostName);

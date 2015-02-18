@@ -40,6 +40,7 @@ _ReSharper*/
 *.resharper
 [Tt]est[Rr]esult*
 *.sass-cache
+*.GhostDoc.xml
 
 #Project file
 
