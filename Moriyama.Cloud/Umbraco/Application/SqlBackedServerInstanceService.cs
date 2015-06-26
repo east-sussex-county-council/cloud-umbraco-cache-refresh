@@ -73,7 +73,7 @@ namespace Moriyama.Cloud.Umbraco.Application
             var connection = new SqlConnection(ConnectionString);
             connection.Open();
 
-            var processedPublishses = new List<Guid>();
+            Guid? processedPublish = null;
 
             var publishSql = TextResourceReader.Instance.ReadResourceFile("Moriyama.Cloud.Umbraco.Sql.RefreshCache.sql");
             var command = new SqlCommand(publishSql, connection);
@@ -81,37 +81,27 @@ namespace Moriyama.Cloud.Umbraco.Application
 
             var publishes = command.ExecuteReader();
 
-            while (publishes.Read())
+            if (publishes.Read())
             {
                 var documentId = (int)publishes["DocumentId"];
                 var identifier = (Guid)publishes["PublishId"];
 
                 // do the actual cache refresh here!
-                var users = User.getAll();
-                var admin = users.SingleOrDefault(user => user.UserType.Alias == "admin");
-                if (admin != null)
-                {
-                    var webService = new umbraco.presentation.webservices.CacheRefresher();
-                    webService.RefreshAll(new Guid(UmbracoCms.Web.Cache.DistributedCache.PageCacheRefresherId), admin.LoginName, admin.GetPassword());
-                }
-                processedPublishses.Add(identifier);
+                var admin = new User(0);
+                var webService = new umbraco.presentation.webservices.CacheRefresher();
+                webService.RefreshAll(new Guid(UmbracoCms.Web.Cache.DistributedCache.PageCacheRefresherId), admin.LoginName, admin.GetPassword());
+                processedPublish = identifier;
             }
             publishes.Close();
 
-            const int batchSize = 10;
-            var taken = processedPublishses.Take(batchSize).ToArray();
-            while (taken.Length > 0) 
+            if (processedPublish != null) 
             {
-                processedPublishses.RemoveRange(0, taken.Length);
-
                 var deleteSql =
                     TextResourceReader.Instance.ReadResourceFile("Moriyama.Cloud.Umbraco.Sql.DeletePublishes.sql");
 
                 command = new SqlCommand(deleteSql, connection);
-                command.Parameters.AddWithValue("@Publishes", string.Join(",", taken));
+                command.Parameters.AddWithValue("@Publishes", processedPublish);
                 command.ExecuteNonQuery();
-
-                taken = processedPublishses.Take(batchSize).ToArray();
             }
 
             KeepAlive(connection, hostName);

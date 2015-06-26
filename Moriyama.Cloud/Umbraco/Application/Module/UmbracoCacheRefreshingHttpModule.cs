@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Web;
 
 namespace Moriyama.Cloud.Umbraco.Application.Module
@@ -17,19 +18,27 @@ namespace Moriyama.Cloud.Umbraco.Application.Module
 
         static void ContextPostReleaseRequestState(object sender, EventArgs e)
         {
-            var context = sender as HttpApplication;
-            if (!context.Response.ContentType.Contains("text/html")) return;
-
-            lock (context.Application[AppVarName])
+            try
             {
-                var lastCheck = (DateTime)context.Application[AppVarName];
-                var tenSecondsAgo = DateTime.Now.Subtract(TimeSpan.FromSeconds(10));
+                var context = sender as HttpApplication;
+                if (!context.Response.ContentType.Contains("text/html")) return;
 
-                if (lastCheck >= tenSecondsAgo) return;
+                lock (context.Application[AppVarName])
+                {
+                    var lastCheck = (DateTime) context.Application[AppVarName];
+                    var tenSecondsAgo = DateTime.Now.Subtract(TimeSpan.FromSeconds(10));
 
-                context.Application[AppVarName] = DateTime.Now;
-                var host = Environment.MachineName;
-                SqlBackedServerInstanceService.Instance.RefreshCache(host);
+                    if (lastCheck >= tenSecondsAgo) return;
+
+                    context.Application[AppVarName] = DateTime.Now;
+                    var host = Environment.MachineName;
+                    SqlBackedServerInstanceService.Instance.RefreshCache(host);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.Message);
+                Trace.TraceError(ex.StackTrace);
             }
         }
 
